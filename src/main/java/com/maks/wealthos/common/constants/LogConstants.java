@@ -10,5 +10,8 @@ public final class LogConstants {
     public static final String INSURANCE_MODULE = "[INSURANCE]";
     public static final String INVESTMENT_MODULE = "[INVESTMENT]";
     public static final String DASHBOARD_MODULE = "[DASHBOARD]";
+    public static final String SECURITY_MODULE = "[SECURITY]";
+    public static final String BUDGET_MODULE = "[BUDGET]";
+    public static final String USER_MODULE = "[USER]";
     
 }

@@ -91,4 +91,39 @@ public class TransactionController {
                 transactions
         );
     }
+
+    @GetMapping("/user/{userId}")
+    public ApiResponse<List<TransactionResponse>> getTransactionsByUser(
+            @PathVariable Long userId) {
+
+        return new ApiResponse<>(
+                "Transactions fetched successfully",
+                service.getTransactionsByUser(userId)
+        );
+    }
+
+    @PutMapping("/{transactionId}")
+    public ApiResponse<TransactionResponse> updateTransaction(
+            @PathVariable Long transactionId,
+            @Valid @RequestBody CreateTransactionRequest request) {
+
+        return new ApiResponse<>(
+                "Transaction updated successfully",
+                service.updateTransaction(
+                        transactionId,
+                        request)
+        );
+    }
+
+    @DeleteMapping("/{transactionId}")
+    public ApiResponse<String> deleteTransaction(
+            @PathVariable Long transactionId) {
+
+        service.deleteTransaction(transactionId);
+
+        return new ApiResponse<>(
+                "Transaction deleted successfully",
+                "SUCCESS"
+        );
+    }
 }

@@ -103,4 +103,110 @@ public class TransactionServiceImpl implements TransactionService {
 
         return transactions;
     }
+
+    @Override
+    public List<TransactionResponse> getTransactionsByUser(Long userId) {
+
+        log.info(
+                "{} Fetching transactions for UserId={}",
+                LogConstants.TRANSACTION_MODULE,
+                userId
+        );
+
+        List<TransactionResponse> transactions =
+                repository.findByUserId(userId)
+                        .stream()
+                        .map(mapper::toResponse)
+                        .toList();
+
+        log.info(
+                "{} Total transactions fetched={} for UserId={}",
+                LogConstants.TRANSACTION_MODULE,
+                transactions.size(),
+                userId
+        );
+
+        return transactions;
+    }
+
+    @Override
+    public void deleteTransaction(Long transactionId) {
+
+        log.info(
+                "{} Deleting transaction. TransactionId={}",
+                LogConstants.TRANSACTION_MODULE,
+                transactionId
+        );
+
+        TransactionEntity transaction =
+                repository.findById(transactionId)
+                        .orElseThrow(() -> {
+
+                            log.error(
+                                    "{} Transaction not found. TransactionId={}",
+                                    LogConstants.TRANSACTION_MODULE,
+                                    transactionId
+                            );
+
+                            return new ResourceNotFoundException(
+                                    "Transaction not found : " + transactionId
+                            );
+                        });
+
+        repository.delete(transaction);
+
+        log.info(
+                "{} Transaction deleted successfully. TransactionId={}",
+                LogConstants.TRANSACTION_MODULE,
+                transactionId
+        );
+    }
+
+    @Override
+    public TransactionResponse updateTransaction(
+            Long transactionId,
+            CreateTransactionRequest request) {
+
+        log.info(
+                "{} Updating transaction. TransactionId={}",
+                LogConstants.TRANSACTION_MODULE,
+                transactionId
+        );
+
+        TransactionEntity existing =
+                repository.findById(transactionId)
+                        .orElseThrow(() -> {
+
+                            log.error(
+                                    "{} Transaction not found. TransactionId={}",
+                                    LogConstants.TRANSACTION_MODULE,
+                                    transactionId
+                            );
+
+                            return new ResourceNotFoundException(
+                                    "Transaction not found : " + transactionId
+                            );
+                        });
+
+        existing.setUserId(request.getUserId());
+        existing.setCategoryId(request.getCategoryId());
+        existing.setTransactionDate(request.getTransactionDate());
+        existing.setTransactionType(request.getTransactionType());
+        existing.setAmount(request.getAmount());
+        existing.setDescription(request.getDescription());
+        existing.setAccountName(request.getAccountName());
+        existing.setReferenceNumber(request.getReferenceNumber());
+        existing.setRemarks(request.getRemarks());
+
+        TransactionEntity updated =
+                repository.save(existing);
+
+        log.info(
+                "{} Transaction updated successfully. TransactionId={}",
+                LogConstants.TRANSACTION_MODULE,
+                updated.getTransactionId()
+        );
+
+        return mapper.toResponse(updated);
+    }
 }
