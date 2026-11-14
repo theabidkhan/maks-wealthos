@@ -1,22 +1,26 @@
 CREATE TABLE wealthos.users
 (
-    user_id BIGSERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
 
-    username VARCHAR(100) NOT NULL,
+    first_name VARCHAR(100) NOT NULL,
+
+    last_name VARCHAR(100) NOT NULL,
 
     email VARCHAR(255) NOT NULL,
 
+    password VARCHAR(255) NOT NULL,
+
     mobile_number VARCHAR(20),
 
-    status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
+    active BOOLEAN NOT NULL DEFAULT TRUE,
 
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP,
 
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP
 );
 
 ALTER TABLE wealthos.users
     ADD CONSTRAINT uk_users_email UNIQUE(email);
 
-CREATE INDEX idx_users_status
-    ON wealthos.users(status);
+CREATE INDEX idx_users_active
+    ON wealthos.users(active);
